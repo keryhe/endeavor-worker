@@ -14,14 +14,16 @@ namespace Endeavor.Worker
     public class Worker : BackgroundService
     {
         private readonly IMessageListener<TaskToBeWorked> _listener;
+        private readonly Func<string, IStep> _stepAccessor;
         private readonly IDal _dal;
         private readonly ILogger<Worker> _logger;
         private ManualResetEvent _resetEvent = new ManualResetEvent(false);
 
 
-        public Worker(IMessageListener<TaskToBeWorked> listener, IDal dal, ILogger<Worker> logger)
+        public Worker(IMessageListener<TaskToBeWorked> listener, Func<string, IStep> stepAccessor, IDal dal, ILogger<Worker> logger)
         {
             _listener = listener;
+            _stepAccessor = stepAccessor;
             _dal = dal;
             _logger = logger;
         }
@@ -74,8 +76,7 @@ namespace Endeavor.Worker
         {
             Dictionary<string, object> stepData = _dal.GetStep(stepId, stepType);
 
-            Type type = Type.GetType(stepType);
-            IStep step = (IStep)Activator.CreateInstance(type);
+            IStep step = _stepAccessor(stepType);
             step.Initialize(stepData);
             TaskResponse response = step.Execute(request);
 

@@ -26,7 +26,7 @@ namespace Endeavor.Worker.Persistence
                 { "@StepId", stepId }
             };
 
-            List<Dictionary<string, object>> steps = Query("Get" + stepType + "Step", CommandType.StoredProcedure, parameters);
+            List<Dictionary<string, object>> steps = Query("Get" + stepType, CommandType.StoredProcedure, parameters);
 
             if (steps.Count > 0)
             {
@@ -40,14 +40,14 @@ namespace Endeavor.Worker.Persistence
             string result = "";
 
             StringBuilder sb = new StringBuilder();
-            sb.Append("SELECT TaskData FROM Taak WHERE ID = ");
+            sb.Append("SELECT TaskData FROM Task WHERE ID = ");
             sb.Append(taskId.ToString());
 
-            List<Dictionary<string, object>> steps = Query(sb.ToString(), CommandType.Text, null);
+            List<Dictionary<string, object>> tasks = Query(sb.ToString(), CommandType.Text, null);
 
-            if (steps.Count > 0)
+            if (tasks.Count > 0)
             {
-                result = steps[0]["TaskOutput"].ToString();
+                result = tasks[0]["TaskData"]?.ToString();
             }
             return result;
 
@@ -59,7 +59,7 @@ namespace Endeavor.Worker.Persistence
             StringBuilder sb = new StringBuilder();
             sb.Append("UPDATE Task SET StatusValue = ");
             sb.Append(statusValue.ToString());
-            sb.Append(" WHERE TaskID = ");
+            sb.Append(" WHERE ID = ");
             sb.Append(taskID.ToString());
 
             _provider.ExecuteNonQuery(sb.ToString(), CommandType.Text);

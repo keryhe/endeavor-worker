@@ -6,7 +6,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Threading.Tasks;
+using Endeavor.Steps;
+using Endeavor.Steps.Core;
 
 namespace Endeavor.Worker.Service
 {
@@ -34,9 +37,24 @@ namespace Endeavor.Worker.Service
                 {
                     services.AddOptions();
 
-                    services.AddSqlServerProvider(hostContext.Configuration.GetSection("SqlServerOptions"));
+                    services.AddSqlServerProvider(hostContext.Configuration.GetSection("SqlServerProvider"));
                     services.AddRabbitMQListener<TaskToBeWorked>(hostContext.Configuration.GetSection("RabbitMQListener"));
-
+                    services.AddTransient<Func<string, IStep>>(sp => stepType =>
+                    {
+                        switch(stepType)
+                        {
+                            case "StartStep":
+                                return new StartStep();
+                            case "ManualStep":
+                                return new ManualStep();
+                            case "DecisionStep":
+                                return new DecisionStep();
+                            case "EndStep":
+                                return new EndStep();
+                            default:
+                                throw new Exception(stepType + " not found");
+                        }
+                    });
                     services.AddSingleton<IDal, WorkerDal>();
                     services.AddSingleton<IHostedService, Worker>();
 
