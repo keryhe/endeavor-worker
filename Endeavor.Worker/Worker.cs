@@ -51,24 +51,33 @@ namespace Endeavor.Worker
 
         private void Callback(TaskToBeWorked message)
         {
-            _dal.UpdateTaskStatus(message.TaskId, StatusType.Processing);
-
-            TaskRequest request = new TaskRequest
+            try
             {
-                TaskId = message.TaskId,
-                Status = StatusType.Processing,
-                Input = _dal.GetTaskData(message.TaskId)
-            };
+                _logger.LogDebug("Processing {0} for task {1}" , message.StepType, message.TaskId);
+                _dal.UpdateTaskStatus(message.TaskId, StatusType.Processing);
 
-            TaskResponse response = ExecuteStep(message.StepId, message.StepType, request);
+                TaskRequest request = new TaskRequest
+                {
+                    TaskId = message.TaskId,
+                    Status = StatusType.Processing,
+                    Input = _dal.GetTaskData(message.TaskId)
+                };
 
-            if (response.Status == StatusType.Complete)
-            {
-                _dal.ReleaseTask(message.TaskId, response.ReleaseValue, response.Output);
+                TaskResponse response = ExecuteStep(message.StepId, message.StepType, request);
+
+                if (response.Status == StatusType.Complete)
+                {
+                    _dal.ReleaseTask(message.TaskId, response.ReleaseValue, response.Output);
+                }
+                else
+                {
+                    _dal.UpdateTaskStatus(message.TaskId, response.Status);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                _dal.UpdateTaskStatus(message.TaskId, response.Status);
+                _logger.LogError(ex, "Error processing task {0}", message.TaskId);
+                _dal.UpdateTaskStatus(message.TaskId, StatusType.Error);
             }
         }
 
