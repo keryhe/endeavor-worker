@@ -3,22 +3,23 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>0.9.0</Version>
-    <Authors>KeithHeard</Authors>
+    <Version>0.9.1</Version>
+    <Authors>Keith Heard</Authors>
     <Product>Endeavor</Product>
     <Description>Endeavor Worker</Description>
     <Copyright>Copyright 2019</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/keryhe/endeavor-worker</PackageProjectUrl>
     <PackageTags>Endeavor Workflow Worker</PackageTags>
-    <AssemblyVersion>0.9.0.0</AssemblyVersion>
-    <FileVersion>0.9.0.0</FileVersion>
+    <AssemblyVersion>0.9.1.0</AssemblyVersion>
+    <FileVersion>0.9.1.0</FileVersion>
+    <Company>Keith Heard</Company>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Endeavor.Steps" Version="0.9.3" />
     <PackageReference Include="Keryhe.Messaging" Version="0.9.2" />
-    <PackageReference Include="Keryhe.Persistence" Version="0.9.0" />
+    <PackageReference Include="Keryhe.Persistence" Version="0.9.1" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="2.2.0" />
   </ItemGroup>
 
