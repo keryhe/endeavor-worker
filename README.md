@@ -1,3 +1,3 @@
-# endeavor-worker
+# endeavor-steps
 
-The Worker Service is responsible for processing the tasks by executing the current step for the given task.
+This repository has moved to the [endeavor-workflow](https://github.com/endeavor-workflow/endeavor-worker) Organization.
